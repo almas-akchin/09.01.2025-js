@@ -1,0 +1,37 @@
+/**
+ * @param {Function} fn
+ * @return {Function}
+ */
+function memoize(fn) {
+    const cache = new Map(); // Cache to store results
+    let callCount = 0; // Track number of actual calls
+
+    const memoizedFn = (...args) => {
+        const key = JSON.stringify(args); // Serialize arguments as key
+        if (cache.has(key)) {
+            return cache.get(key); // Return cached value if available
+        }
+        // Compute result and store in cache
+        const result = fn(...args);
+        cache.set(key, result);
+        callCount++;
+        return result;
+    };
+
+    // Add a method to retrieve the call count
+    memoizedFn.getCallCount = () => callCount;
+
+    return memoizedFn;
+}
+
+/** 
+ * Example usage:
+ * let callCount = 0;
+ * const memoizedSum = memoize(function (a, b) {
+ *   callCount += 1;
+ *   return a + b;
+ * });
+ * console.log(memoizedSum(2, 3)); // 5
+ * console.log(memoizedSum(2, 3)); // 5
+ * console.log(memoizedSum.getCallCount()); // 1
+ */
